@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="author" content="Jed Rembold and Eric Roberts">
-  <title>Section 06: Interactive Graphics</title>
+  <title>Section 06: Student Applets</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -34,40 +34,14 @@
     <div class="slides">
 
 <section id="title-slide">
-  <h1 class="title">Section 06: Interactive Graphics</h1>
+  <h1 class="title">Section 06: Student Applets</h1>
   <p class="author">Jed Rembold and Eric Roberts</p>
   <p class="date">Week of October 9th</p>
 </section>
 
-<section id="problem-1" class="slide level2">
-<h2>Problem 1</h2>
-<div class="cols">
-<div class="col">
-<ul>
-<li>Your first task of the day is to recreate a Yin-Yang symbol,
-centered in the window, as seen to the right.</li>
-<li>At first glance, this may not look possible given the
-<code class="python">GObject</code>s discussed so far in class, but
-clever layering of known shapes will get you there!</li>
-</ul>
-</div>
-<div class="col">
-<svg ViewBox="0 0 400 400" width="70%">
-<rect width="400" height="400" fill="white" />
-<circle cx="200" cy="200" r="160" />
-<rect x="200" y="40" width="160" height="320" fill="white" />
-<circle cx="200" cy="120" r="80" />
-<circle cx="200" cy="280" r="80" fill="white" />
-<circle cx="200" cy="280" r="20" />
-<circle cx="200" cy="120" r="20" fill="white"/>
-<circle cx="200" cy="200" r="160" fill="none" stroke-width="3" stroke="black"/>
-</svg>
-</div>
-</div>
-</section>
-<section id="try-it" class="slide level2"
+<section id="yin-yang" class="slide level2"
 data-state="DrawYinYangLayersTrace">
-<h2 data-state="DrawYinYangLayersTrace">Try it!</h2>
+<h2 data-state="DrawYinYangLayersTrace">Yin-Yang</h2>
 <table style="margin:auto;">
 <tbody style="border:none; background-color:#272822;">
 <tr style="border:none; background-color:#272822; padding:0px;">
@@ -97,177 +71,12 @@ style="border:none; background-color:#272822;">
 </tbody>
 </table>
 </section>
-<section id="possible-solution" class="slide level2">
-<h2>Possible Solution</h2>
-<pre ><code class="mypython" style="max-height:800px">from pgl import GWindow, GRect, GOval
-
-GW_WIDTH = 600
-GW_HEIGHT = GW_WIDTH
-RADIUS_L = 0.4 * GW_WIDTH
-RADIUS_M = 0.5 * RADIUS_L
-RADIUS_S = 0.25 * RADIUS_M
-
-def draw_yinyang():
-    """
-    This function draws a yinyang symbol to the window
-    """
-    gw = GWindow(GW_WIDTH, GW_HEIGHT)
-    cx = GW_WIDTH / 2
-    cy = GW_WIDTH / 2
-
-    # Large black circle
-    c1 = GOval(2 * RADIUS_L, 2 * RADIUS_L)
-    c1.set_filled(True)
-    gw.add(c1, cx - RADIUS_L, cy - RADIUS_L)
-
-    # White rectangle hiding right side
-    r1 = GRect(RADIUS_L, 2 * RADIUS_L)
-    r1.set_filled(True)
-    r1.set_color("white")
-    gw.add(r1, cx, cy - RADIUS_L)
-
-    # Medium black upper circle
-    c2 = GOval(2 * RADIUS_M, 2 * RADIUS_M)
-    c2.set_filled(True)
-    gw.add(c2, cx - RADIUS_M, cy - RADIUS_L)
-
-    # Medium white lower circle
-    c3 = GOval(2 * RADIUS_M, 2 * RADIUS_M)
-    c3.set_filled(True)
-    c3.set_color("white")
-    gw.add(c3, cx - RADIUS_M, cy)
-
-    # Small white upper circle
-    c4 = GOval(2 * RADIUS_S, 2 * RADIUS_S)
-    c4.set_filled(True)
-    c4.set_color("white")
-    gw.add(c4, cx - RADIUS_S, cy - RADIUS_M - RADIUS_S)
-
-    # Small black lower circle
-    c5 = GOval(2 * RADIUS_S, 2 * RADIUS_S)
-    c5.set_filled(True)
-    gw.add(c5, cx - RADIUS_S, cy + RADIUS_M - RADIUS_S)
-
-    # Outline circle
-    c6 = GOval(2 * RADIUS_L, 2 * RADIUS_L)
-    c6.set_line_width(3)
-    gw.add(c6, cx - RADIUS_L, cy - RADIUS_L)
-
-
-if __name__ == "__main__":
-    draw_yinyang()</code></pre>
-</section>
-<section id="problem-2" class="slide level2" data-state="StampSimTrace">
-<h2 data-state="StampSimTrace">Problem 2</h2>
-<div class="cols">
-<div class="col">
-<!--<video data-autoplay loop src="./images/stamping_demo.webm" />-->
+<section id="stamper" class="slide level2" data-state="StampSimTrace">
+<h2 data-state="StampSimTrace">Stamper</h2>
 <div id="StampCanvas" class="CTCanvas"
-style="border:none; background-color:white; width:800px; height:800px;">
+style="border:none; background-color:white; width:100%; height:800px;">
 
 </div>
-</div>
-<div class="col" style="flex-grow:1.5">
-<ul>
-<li>Many graphical programs have a stamping tool, where clicking the
-mouse will “stamp” a shape onto the scene.</li>
-<li>Often, it is useful to have the shape of the stamp follow the user’s
-cursor, so that the user can line it up exactly as they choose.</li>
-<li>In this problem, you want to recreate the program to the left, where
-clicking stamps a random shape (circle or square) in a random color to
-the screen.</li>
-</ul>
-</div>
-</div>
-</section>
-<section id="are-you-listening" class="slide level2">
-<h2>Are you Listening?</h2>
-<ul>
-<li>You need to accomplish two different forms of interaction in this
-problem:
-<ul>
-<li>Updating the position of the stamp to follow the user’s cursor</li>
-<li>Adding a new shape to the window when the user clicks</li>
-</ul></li>
-<li>This suggests you may want to be listening to two different events.
-What might be good choices?</li>
-</ul>
-</section>
-<section id="considerations-to-ponder" class="slide level2">
-<h2>Considerations to Ponder</h2>
-<ul>
-<li>Make sure your listeners and callback functions are working with
-print statements before you start adding graphics!</li>
-<li>The stamp should be centered on the cursor. How do you need to shift
-it to ensure this is so?</li>
-<li>You have a few methods you can use to update the position of an
-object. Which will be most useful in this case?</li>
-<li>You need to create a <strong>new</strong> object each time the stamp
-is clicked
-<ul>
-<li>You can you ensure it is a circle 50% of the time and a square 50%
-of the time?</li>
-<li>How can you get it to be a random color?</li>
-<li>When you add the new object to the window, it will appear on top of
-the stamp, which looks odd. How could you fix this?</li>
-</ul></li>
-</ul>
-</section>
-<section id="possible-solution-1" class="slide level2">
-<h2>Possible Solution</h2>
-<pre ><code class="mypython" style="max-height:800px">from pgl import GWindow, GRect, GOval
-import random
-
-def random_color():
-    color = "#"
-    for _ in range(6):
-        color += random.choice("0123456789ABCDEF")
-    return color
-
-def stamper():
-
-    def move_action(event):
-        """
-        Updates the location of the stamp to track
-        the mouse. 
-        """
-        mx, my, = event.get_x(), event.get_y()
-        stamp.set_location(mx-25, my-25)
-
-    def click_action(event):
-        """ Stamps a new shape to the window. """
-        mx, my = event.get_x(), event.get_y()
-        if random.random() > 0.5:
-            shape = GOval(mx - 25, my - 25, 50, 50)
-        else:
-            shape = GRect(mx - 25, my - 25, 50, 50)
-        shape.set_filled(True)
-        shape.set_color(random_color())
-        gw.add(shape)
-        shape.send_backward()
-
-    gw = GWindow(600, 600)
-
-    stamp = GRect(-50, -50, 50, 50)
-    stamp.set_filled(True)
-    gw.add(stamp)
-
-    gw.add_event_listener("mousemove", move_action)
-    gw.add_event_listener("mousedown", click_action)
-
-
-stamper()</code></pre>
-</section>
-<section id="challenge" class="slide level2">
-<h2><i class="fa-solid fa-trophy fa-beat"></i> Challenge!</h2>
-<ul>
-<li>Add a feature so that if the use clicks on previously stamped
-object, the color of that original object changes to some new random
-color</li>
-<li>In this case, a new object does <strong>not</strong> get created and
-added to the window. Only the color of the original shape is
-changed.</li>
-</ul>
 </section>
     </div>
   </div>
