@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Jed Rembold and Eric Roberts">
+  <title>Section 06: Interactive Graphics</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="./js/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="./js/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="./js/revealjs/../../css/theme/monokai.css" id="theme">
+  <link rel="stylesheet" href="./js/revealjs/../../css/highlight/monokai.css">
+  <link rel="stylesheet" href="css/codetrace.css"/>
+  <link rel="stylesheet" href="css/roberts.css"/>
+  <link rel="stylesheet" href="DrawYinYangLayers.css"/>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Section 06: Interactive Graphics</h1>
+  <p class="author">Jed Rembold and Eric Roberts</p>
+  <p class="date">Week of October 9th</p>
+</section>
+
+<section id="problem-1" class="slide level2">
+<h2>Problem 1</h2>
+<div class="cols">
+<div class="col">
+<ul>
+<li>Your first task of the day is to recreate a Yin-Yang symbol,
+centered in the window, as seen to the right.</li>
+<li>At first glance, this may not look possible given the
+<code class="python">GObject</code>s discussed so far in class, but
+clever layering of known shapes will get you there!</li>
+</ul>
+</div>
+<div class="col">
+<svg ViewBox="0 0 400 400" width="70%">
+<rect width="400" height="400" fill="white" />
+<circle cx="200" cy="200" r="160" />
+<rect x="200" y="40" width="160" height="320" fill="white" />
+<circle cx="200" cy="120" r="80" />
+<circle cx="200" cy="280" r="80" fill="white" />
+<circle cx="200" cy="280" r="20" />
+<circle cx="200" cy="120" r="20" fill="white"/>
+<circle cx="200" cy="200" r="160" fill="none" stroke-width="3" stroke="black"/>
+</svg>
+</div>
+</div>
+</section>
+<section id="try-it" class="slide level2"
+data-state="DrawYinYangLayersTrace">
+<h2 data-state="DrawYinYangLayersTrace">Try it!</h2>
+<table style="margin:auto;">
+<tbody style="border:none; background-color:#272822;">
+<tr style="border:none; background-color:#272822; padding:0px;">
+<td colspan="2" style="border:none; background-color:#272822; padding:0px;">
+<div id="DrawYinYangCanvas" class="CTCanvas"
+style="border:none; background-color:#272822;">
+
+</div>
+</td>
+</tr>
+<tr>
+<td style="text-align:center; width:948px;">
+<table class="CTControlStrip">
+<tbody>
+<tr>
+<td>
+<img id=DrawYinYangResetButton
+     style="width:100px;"
+     src="images/ResetControl.png"
+     alt="ResetButton" />
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="possible-solution" class="slide level2">
+<h2>Possible Solution</h2>
+<pre ><code class="mypython" style="max-height:800px">from pgl import GWindow, GRect, GOval
+
+GW_WIDTH = 600
+GW_HEIGHT = GW_WIDTH
+RADIUS_L = 0.4 * GW_WIDTH
+RADIUS_M = 0.5 * RADIUS_L
+RADIUS_S = 0.25 * RADIUS_M
+
+def draw_yinyang():
+    """
+    This function draws a yinyang symbol to the window
+    """
+    gw = GWindow(GW_WIDTH, GW_HEIGHT)
+    cx = GW_WIDTH / 2
+    cy = GW_WIDTH / 2
+
+    # Large black circle
+    c1 = GOval(2 * RADIUS_L, 2 * RADIUS_L)
+    c1.set_filled(True)
+    gw.add(c1, cx - RADIUS_L, cy - RADIUS_L)
+
+    # White rectangle hiding right side
+    r1 = GRect(RADIUS_L, 2 * RADIUS_L)
+    r1.set_filled(True)
+    r1.set_color("white")
+    gw.add(r1, cx, cy - RADIUS_L)
+
+    # Medium black upper circle
+    c2 = GOval(2 * RADIUS_M, 2 * RADIUS_M)
+    c2.set_filled(True)
+    gw.add(c2, cx - RADIUS_M, cy - RADIUS_L)
+
+    # Medium white lower circle
+    c3 = GOval(2 * RADIUS_M, 2 * RADIUS_M)
+    c3.set_filled(True)
+    c3.set_color("white")
+    gw.add(c3, cx - RADIUS_M, cy)
+
+    # Small white upper circle
+    c4 = GOval(2 * RADIUS_S, 2 * RADIUS_S)
+    c4.set_filled(True)
+    c4.set_color("white")
+    gw.add(c4, cx - RADIUS_S, cy - RADIUS_M - RADIUS_S)
+
+    # Small black lower circle
+    c5 = GOval(2 * RADIUS_S, 2 * RADIUS_S)
+    c5.set_filled(True)
+    gw.add(c5, cx - RADIUS_S, cy + RADIUS_M - RADIUS_S)
+
+    # Outline circle
+    c6 = GOval(2 * RADIUS_L, 2 * RADIUS_L)
+    c6.set_line_width(3)
+    gw.add(c6, cx - RADIUS_L, cy - RADIUS_L)
+
+
+if __name__ == "__main__":
+    draw_yinyang()</code></pre>
+</section>
+<section id="problem-2" class="slide level2" data-state="StampSimTrace">
+<h2 data-state="StampSimTrace">Problem 2</h2>
+<div class="cols">
+<div class="col">
+<!--<video data-autoplay loop src="./images/stamping_demo.webm" />-->
+<div id="StampCanvas" class="CTCanvas"
+style="border:none; background-color:white; width:800px; height:800px;">
+
+</div>
+</div>
+<div class="col" style="flex-grow:1.5">
+<ul>
+<li>Many graphical programs have a stamping tool, where clicking the
+mouse will “stamp” a shape onto the scene.</li>
+<li>Often, it is useful to have the shape of the stamp follow the user’s
+cursor, so that the user can line it up exactly as they choose.</li>
+<li>In this problem, you want to recreate the program to the left, where
+clicking stamps a random shape (circle or square) in a random color to
+the screen.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="are-you-listening" class="slide level2">
+<h2>Are you Listening?</h2>
+<ul>
+<li>You need to accomplish two different forms of interaction in this
+problem:
+<ul>
+<li>Updating the position of the stamp to follow the user’s cursor</li>
+<li>Adding a new shape to the window when the user clicks</li>
+</ul></li>
+<li>This suggests you may want to be listening to two different events.
+What might be good choices?</li>
+</ul>
+</section>
+<section id="considerations-to-ponder" class="slide level2">
+<h2>Considerations to Ponder</h2>
+<ul>
+<li>Make sure your listeners and callback functions are working with
+print statements before you start adding graphics!</li>
+<li>The stamp should be centered on the cursor. How do you need to shift
+it to ensure this is so?</li>
+<li>You have a few methods you can use to update the position of an
+object. Which will be most useful in this case?</li>
+<li>You need to create a <strong>new</strong> object each time the stamp
+is clicked
+<ul>
+<li>You can you ensure it is a circle 50% of the time and a square 50%
+of the time?</li>
+<li>How can you get it to be a random color?</li>
+<li>When you add the new object to the window, it will appear on top of
+the stamp, which looks odd. How could you fix this?</li>
+</ul></li>
+</ul>
+</section>
+<section id="possible-solution-1" class="slide level2">
+<h2>Possible Solution</h2>
+<pre ><code class="mypython" style="max-height:800px">from pgl import GWindow, GRect, GOval
+import random
+
+def random_color():
+    color = "#"
+    for _ in range(6):
+        color += random.choice("0123456789ABCDEF")
+    return color
+
+def stamper():
+
+    def move_action(event):
+        """
+        Updates the location of the stamp to track
+        the mouse. 
+        """
+        mx, my, = event.get_x(), event.get_y()
+        stamp.set_location(mx-25, my-25)
+
+    def click_action(event):
+        """ Stamps a new shape to the window. """
+        mx, my = event.get_x(), event.get_y()
+        if random.random() > 0.5:
+            shape = GOval(mx - 25, my - 25, 50, 50)
+        else:
+            shape = GRect(mx - 25, my - 25, 50, 50)
+        shape.set_filled(True)
+        shape.set_color(random_color())
+        gw.add(shape)
+        shape.send_backward()
+
+    gw = GWindow(600, 600)
+
+    stamp = GRect(-50, -50, 50, 50)
+    stamp.set_filled(True)
+    gw.add(stamp)
+
+    gw.add_event_listener("mousemove", move_action)
+    gw.add_event_listener("mousedown", click_action)
+
+
+stamper()</code></pre>
+</section>
+<section id="challenge" class="slide level2">
+<h2><i class="fa-solid fa-trophy fa-beat"></i> Challenge!</h2>
+<ul>
+<li>Add a feature so that if the use clicks on previously stamped
+object, the color of that original object changes to some new random
+color</li>
+<li>In this case, a new object does <strong>not</strong> get created and
+added to the window. Only the color of the original shape is
+changed.</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="./js/revealjs/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="./js/revealjs/plugin/notes/notes.js"></script>
+  <script src="./js/revealjs/plugin/search/search.js"></script>
+  <script src="./js/revealjs/plugin/zoom/zoom.js"></script>
+  // Added plugins
+  <!--<script src="./js/revealjs/../plugin/chart/Chart.min.js"></script>-->
+  <!--<script src="./js/revealjs/../plugin/chart/plugin.js"></script>-->
+  <script src="./js/revealjs/../plugins/chalkboard/plugin.js"></script>
+  <!--<script src="./js/revealjs/../plugins/menu/menu.js"></script>-->
+  <!--<script src="./js/revealjs/../other_plugins/reveald3/reveald3.js"></script>,-->
+  <script src="./js/revealjs/plugin/math/math.js"></script>
+  <script src="./js/revealjs/plugin/highlight/highlight.js"></script>
+  <script src="./js/revealjs/../python_language.js"></script>
+
+  // Font Awesome Characters
+  <script src="https://kit.fontawesome.com/4bc05635b0.js" crossorigin="anonymous"></script>
+
+  // Code Tracing
+  <script src="./js/revealjs/../codetrace.js"></script>
+
+  <script src="./js/revealjs/../../js/pgl.js"></script>
+
+  <script src="DrawYinYangLayersTrace.js"></script>
+  <script src="StampSimTrace.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+		//autoAnimateEasing: 'ease-in',
+		//autoAnimateDuration: 1.0,
+		//autoAnimateUnmatched: false,
+        // Display controls in the bottom right corner
+        controls: true,
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: false,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: false,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Global override for autoplaying embedded media (video/audio/iframe)
+        // - null: Media will only autoplay if data-autoplay is present
+        // - true: All media will autoplay, regardless of individual setting
+        // - false: No media will autoplay, regardless of individual setting
+        autoPlayMedia: null,
+        // Global override for preloading lazy-loaded iframes
+        // - null: Iframes with data-src AND data-preload will be loaded when within
+        //   the viewDistance, iframes with only data-src will be loaded when visible
+        // - true: All iframes with data-src will be loaded when within the viewDistance
+        // - false: All iframes with data-src will be loaded only when visible
+        preloadIframes: null,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+        height: 1080,
+        // The display mode that will be used to show slides
+        display: 'block',
+		math: {
+		  <!--mathjax: './js/revealjs/plugin/math/katex.js',-->
+		  <!--config: 'tex-mml-chtml',-->
+		  <!--tex2jax: {-->
+			<!--inlineMath: [['\\(','\\)']],-->
+			<!--displayMath: [['\\[','\\]']],-->
+			<!--balanceBraces: true,-->
+			<!--processEscapes: false,-->
+			<!--processRefs: true,-->
+			<!--processEnvironments: true,-->
+			<!--preview: 'TeX',-->
+			<!--skipTags: ['script','noscript','style','textarea','pre','code'],-->
+			<!--ignoreClass: 'tex2jax_ignore',-->
+			<!--processClass: 'tex2jax_process'-->
+		  <!--},-->
+		  CommonHTML: {scale: 80},
+		},
+          highlight: {
+            beforeHighlight: hljs => hljs.registerLanguage("mypython", function(hljs) {
+              console.log(mypythondef);
+              return mypythondef(hljs); } )
+          },
+        // reveal.js plugins
+        plugins: [
+		  RevealMath,
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom,
+		  RevealChalkboard,
+          <!--RevealMenu,-->
+          <!--Reveald3,-->
+        ],
+		chalkboard: {
+          boardmarkerWidth: 4,
+          chalkWidth: 7,
+          boardmarkers : [
+                  { color: 'rgba(46,52,64,1)',    cursor: 'url(' + path + 'img/boardmarker-black.png), auto'},
+                  { color: 'rgba(94,129,172,1)',  cursor: 'url(' + path + 'img/boardmarker-blue.png), auto'},
+                  { color: 'rgba(191,97,106,1)',  cursor: 'url(' + path + 'img/boardmarker-red.png), auto'},
+                  { color: 'rgba(163,190,140,1)', cursor: 'url(' + path + 'img/boardmarker-green.png), auto'},
+                  { color: 'rgba(208,135,112,1)', cursor: 'url(' + path + 'img/boardmarker-orange.png), auto'},
+                  { color: 'rgba(180,142,173,1)', cursor: 'url(' + path + 'img/boardmarker-purple.png), auto'},
+                  { color: 'rgba(235,203,139,1)', cursor: 'url(' + path + 'img/boardmarker-yellow.png), auto'}
+          ],
+          chalks: [
+                  { color: 'rgba(216,222,223,0.5)',cursor: 'url(' + path + 'img/chalk-white.png), auto'},
+                  { color: 'rgba(94,129,172,0.5)', cursor: 'url(' + path + 'img/chalk-blue.png), auto'},
+                  { color: 'rgba(191,97,106,0.5)', cursor: 'url(' + path + 'img/chalk-red.png), auto'},
+                  { color: 'rgba(163,190,140,0.5)',cursor: 'url(' + path + 'img/chalk-green.png), auto'},
+                  { color: 'rgba(208,135,112,0.5)',cursor: 'url(' + path + 'img/chalk-orange.png), auto'},
+                  { color: 'rgba(180,142,173,0.5)',cursor: 'url(' + path + 'img/chalk-purple.png), auto'},
+                  { color: 'rgba(235,203,139,0.5)',cursor: 'url(' + path + 'img/chalk-yellow.png), auto'}
+          ]
+		},
+		dependencies: [
+            // { src: "./js/revealjs/plugin/title-footer/title-footer.js", async: true, callback: function() { title_footer.initialize({css:"./js/revealjs/plugin/title-footer/title-footer.css"}); } },
+		],
+      });
+  Reveal.addEventListener("DrawYinYangLayersTrace", DrawYinYangLayersDemo);
+  Reveal.addEventListener("StampSimTrace", StampSimDemo);
+    </script>
+  <script>
+  // This is admitedly a very hacky way to achieve my pseudo code highlighting, but it works?
+    function remove_bars() {
+      var pseudoBlocks = document.getElementsByClassName("hljs-pseudo");
+      console.log(pseudoBlocks);
+      for ( var i = 0; i < pseudoBlocks.length; i++) {
+        pseudoBlocks[i].innerHTML = pseudoBlocks[i].innerHTML.replaceAll("\|\|\|", "");
+      }
+      }
+    // omg this is even more hacky now, but I need this to run after hljs has done its thing
+    setTimeout(remove_bars, 100);
+  </script>
+    </body>
+</html>
