@@ -64,6 +64,7 @@ class CodeTrace {
         this.initButton("StepIn", stepInAction);
         this.initButton("StepOver", stepOverAction);
         this.initButton("Reset", resetAction);
+        this.initButton("ToggleDots", showDotsAction);
 
         function runAction(e) {
             ct._tracing = false;
@@ -94,6 +95,13 @@ class CodeTrace {
         function resetAction(e) {
             ct._tracing = true;
             ct.reset();
+            clearTimeout(ct._timer);
+            e.stopPropagation();
+        }
+
+        function showDotsAction(e) {
+            ct._tracing = true;
+            ct.showDots();
             clearTimeout(ct._timer);
             e.stopPropagation();
         }

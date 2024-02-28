@@ -34,7 +34,10 @@ class DrawYinYang extends CodeTrace {
         gw.addEventListener("drag", dragAction);
         gw.addEventListener("click", clickAction);
         this._gw = gw;
+        this._gw.objs = [];
+        this._gw.dotsToggle = false;
         this.reset();
+        console.log(this._gw.objs)
 
         function mousedownAction(e) {
             e.stopPropagation();
@@ -92,40 +95,59 @@ class DrawYinYang extends CodeTrace {
         let c1x = GWINDOW_X + GWINDOW_WIDTH + SHAPE_SEP;
         let c1y = GWINDOW_Y + SHAPE_SEP;
         gw.add(c1, c1x, c1y);
+        gw.objs.push(c1);
 
         let c2 = this.createCircle(CIRCLE_RADIUS, "black", false, 3);
         let c2x = c1x + 2 * CIRCLE_RADIUS + SHAPE_SEP;
         let c2y = c1y;
         gw.add(c2, c2x, c2y);
+        gw.objs.push(c2);
 
         let c3 = this.createCircle(CIRCLE_RADIUS / 2, "black", true);
         let c3x = c1x;
         let c3y = GWINDOW_Y + GWINDOW_HEIGHT - CIRCLE_RADIUS;
         gw.add(c3, c3x, c3y);
+        gw.objs.push(c3);
 
         let c4 = this.createCircle(CIRCLE_RADIUS / 2, "white", true);
         let c4x = c3x + CIRCLE_RADIUS + SHAPE_SEP;
         let c4y = c3y;
         gw.add(c4, c4x, c4y);
+        gw.objs.push(c4);
 
         let c5 = this.createCircle(CIRCLE_RADIUS / 8, "black", true);
         let c5x = c4x + CIRCLE_RADIUS + SHAPE_SEP;
         let c5y = c3y;
         gw.add(c5, c5x, c5y);
+        gw.objs.push(c5);
 
         let c6 = this.createCircle(CIRCLE_RADIUS / 8, "white", true);
         let c6x = c5x + CIRCLE_RADIUS/4 + SHAPE_SEP;
         let c6y = c3y;
         gw.add(c6, c6x, c6y);
+        gw.objs.push(c6);
 
         let r = this.createSquare(1.1 * CIRCLE_RADIUS, 2.1 * CIRCLE_RADIUS, "white");
         let rx = c2x + 2 * CIRCLE_RADIUS + SHAPE_SEP;
         let ry = c2y;
         gw.add(r, rx, ry);
+        gw.objs.push(r);
 
         gw._square = r;
         gw._consoleArea = consoleArea;
         gw._dragObject = null;
+    }
+
+    showDots() {
+        let gw = this._gw;
+        for (let i = 0; i < gw.objs.length; i++) {
+            if (!gw.dotsToggle) {
+                gw.objs[i].showDot(true);
+            } else {
+                gw.objs[i].showDot(false);
+            }
+        }
+        gw.dotsToggle = !gw.dotsToggle;
     }
 
     createCircle(radius, color, filled, linewidth=1) {
