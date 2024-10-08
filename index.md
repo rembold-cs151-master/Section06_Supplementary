@@ -1,7 +1,7 @@
 ---
 title: "Section 06: Student Applets"
 author: Jed Rembold and Eric Roberts
-date: "Week of February 26"
+date: "Week of October 7th"
 slideNumber: true
 theme: monokai
 highlightjs-theme: monokai
