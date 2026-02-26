@@ -1,10 +1,10 @@
 ---
 title: "Section 06: Student Applets"
 author: Jed Rembold and Eric Roberts
-date: "Week of October 6th"
+date: "Week of February 23rd"
 slideNumber: true
-theme: monokai
-highlightjs-theme: monokai
+theme: python_catppuccin
+highlightjs-theme: catppuccin-mocha
 width: 1920
 height: 1080
 transition: fade
@@ -23,11 +23,11 @@ extrajs:
 
 ## Yin-Yang {data-state="DrawYinYangLayersTrace"}
 <table style="margin:auto;">
-<tbody style="border:none; background-color:#272822;">
-<tr style="border:none; background-color:#272822; padding:0px;">
-<td colspan=2 style="border:none; background-color:#272822; padding:0px;">
+<tbody style="border:none; background-color:#1e1e2e;">
+<tr style="border:none; background-color:#1e1e2e; padding:0px;">
+<td colspan=2 style="border:none; background-color:#1e1e2e; padding:0px;">
 <div id="DrawYinYangCanvas" class="CTCanvas"
-     style="border:none; background-color:#272822;"></div>
+     style="border:none; background-color:#1e1e2e;"></div>
 </td>
 </tr>
 <tr>
@@ -38,7 +38,7 @@ extrajs:
 <td>
 <img id=DrawYinYangResetButton
      style="width:100px;"
-     src="images/ResetControl.png"
+     src="images/Reset.png"
      alt="ResetButton" />
 </td>
 <td>

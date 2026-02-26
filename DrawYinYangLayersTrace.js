@@ -8,7 +8,7 @@
 
 "use strict";
 
-const REVEAL_BGCOLOR = "#272822";
+const REVEAL_BGCOLOR = "#1e1e2e";
 const GWINDOW_X = 0;
 const GWINDOW_Y = 0;
 const GWINDOW_WIDTH = 700;
