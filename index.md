@@ -1,7 +1,7 @@
 ---
 title: "Section 06: Student Applets"
 author: Jed Rembold and Eric Roberts
-date: "Week of February 23rd"
+date: "Week of October 5th"
 slideNumber: true
 theme: python_catppuccin
 highlightjs-theme: catppuccin-mocha
